@@ -1,10 +1,13 @@
+import { toAscii, charBrightness, CHARS } from './src/js/ascii.js';
+import { GifBrowser } from './src/js/gifBrowser.js';
+
 class AsciiGifConverter {
   constructor(gifUrl) {
     this.gifUrl = gifUrl;
     this.gif = null;
     this.asciiFrames = [];
     this.currentFrame = 0;
-    this.chars = "@%#*+=-:. ";
+    this.chars = CHARS;
     this.frameDelay = 100;
     this.lastFrameTime = 0;
     this.renderWidth = 0;
@@ -19,8 +22,6 @@ class AsciiGifConverter {
     this.scale = 1;
     this.targetScale = 1;
     this.isGrabbed = false;
-    this.mouseX = 0;
-    this.mouseY = 0;
     this.zoomOriginX = 0;
     this.zoomOriginY = 0;
     this.grabStartX = 0;
@@ -40,9 +41,6 @@ class AsciiGifConverter {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleWheel = this.handleWheel.bind(this);
-    
-    // Initialize GSAP ScrollTrigger
-    gsap.registerPlugin(ScrollTrigger);
     
     // Add event listeners
     document.addEventListener('mousedown', this.handleMouseDown);
@@ -185,7 +183,7 @@ class AsciiGifConverter {
       this.gif = loadImage(this.gifUrl, () => {
         clearTimeout(this.loadTimeout);
         this.processGifFrames();
-        this.forceResizeOnLoad();
+        setTimeout(() => this.windowResized(), 0);
         this.hideLoading();
       }, this.handleError);
     } catch (err) {
@@ -256,15 +254,7 @@ class AsciiGifConverter {
     this.gif.play();
     this.gif.pause();
     this.asciiFrames = [];
-    const aspectRatio = this.gif.width / this.gif.height;
-    if (windowWidth / windowHeight < aspectRatio) {
-      this.renderWidth = windowWidth;
-      this.renderHeight = this.renderWidth / aspectRatio;
-    } else {
-      this.renderHeight = windowHeight;
-      this.renderWidth = this.renderHeight * aspectRatio;
-    }
-
+    this.fitToWindow();
     const totalFrames = this.gif.numFrames();
     for (let i = 0; i < totalFrames; i++) {
       this.gif.setFrame(i);
@@ -278,28 +268,9 @@ class AsciiGifConverter {
   }
 
   convertToAscii(img) {
-    img.resize(
-      this.renderWidth * this.scaleFactor,
-      this.renderHeight * this.scaleFactor
-    );
+    img.resize(this.renderWidth * this.scaleFactor, this.renderHeight * this.scaleFactor);
     img.loadPixels();
-    const asciiFrame = [];
-    for (let y = 0; y < img.height; y++) {
-      let row = "";
-      for (let x = 0; x < img.width; x++) {
-        const index = 4 * (x + y * img.width);
-        const r = img.pixels[index] || 0;
-        const g = img.pixels[index + 1] || 0;
-        const b = img.pixels[index + 2] || 0;
-        const brightness = (r + g + b) / 3;
-        const charIndex = floor(
-          map(brightness, 0, 255, this.chars.length - 1, 0)
-        );
-        row += this.chars.charAt(charIndex);
-      }
-      asciiFrame.push(row);
-    }
-    return asciiFrame;
+    return toAscii(img.pixels, img.width, img.height, this.chars);
   }
 
   update() {
@@ -339,9 +310,6 @@ class AsciiGifConverter {
   handleMouseMove(e) {
     // Only track mouse position if over canvas or already grabbed
     if (!e.target.matches('canvas') && !this.isGrabbed) return;
-    
-    this.mouseX = e.clientX;
-    this.mouseY = e.clientY;
     
     if (!this.isProcessing && this.asciiFrames.length > 0) {
       const rect = canvas.getBoundingClientRect();
@@ -486,8 +454,7 @@ class AsciiGifConverter {
   }
 
   getCharBrightness(char) {
-    const index = this.chars.indexOf(char);
-    return map(index, 0, this.chars.length - 1, 0, 255);
+    return charBrightness(char, this.chars);
   }
 
   updateStats() {
@@ -502,13 +469,13 @@ class AsciiGifConverter {
     ).textContent = `${this.renderWidth}x${this.renderHeight}`;
   }
 
-  forceResizeOnLoad() {
-    setTimeout(() => this.windowResized(), 0);
-  }
-
   windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     if (!this.gif) return;
+    this.processGifFrames();
+  }
+
+  fitToWindow() {
     const aspectRatio = this.gif.width / this.gif.height;
     if (windowWidth / windowHeight < aspectRatio) {
       this.renderWidth = windowWidth;
@@ -517,8 +484,6 @@ class AsciiGifConverter {
       this.renderHeight = windowHeight;
       this.renderWidth = this.renderHeight * aspectRatio;
     }
-    this.asciiFrames = [];
-    this.processGifFrames();
   }
 
   async handleDownload(format) {
@@ -685,9 +650,6 @@ class AsciiGifConverter {
     this.zoomOriginY = 0;
   }
 }
-
-import './src/styles/main.css';
-import { GifBrowser } from './src/js/gifBrowser.js';
 
 let gifConverter;
 let gifBrowser;

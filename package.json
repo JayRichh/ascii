@@ -1,28 +1,15 @@
 {
   "name": "ascii-gif-converter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Convert GIFs to ASCII art animations",
-  "main": "main.js",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "start": "webpack serve --mode development",
-    "build": "webpack --mode production",
-    "dev": "webpack serve --mode development --open"
-  },
-  "dependencies": {
-    "canvas": "^3.1.0",
-    "dotenv": "^16.0.3"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.21.0",
-    "@babel/preset-env": "^7.20.2",
-    "babel-loader": "^9.1.2",
-    "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^6.8.1",
-    "dotenv-webpack": "^8.0.1",
-    "html-webpack-plugin": "^5.5.3",
-    "mini-css-extract-plugin": "^2.7.6",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1"
+    "build": "node build.mjs",
+    "test": "node --test test/ascii.test.mjs",
+    "dev": "node build.mjs && npx -y serve dist -l 3000"
   }
 }
