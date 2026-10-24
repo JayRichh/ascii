@@ -20,21 +20,14 @@ git clone https://github.com/yourusername/ascii-gif-converter.git
 cd ascii-gif-converter
 ```
 
-2. Install dependencies:
+2. Set `GIPHY_API_KEY` in your shell (get one from [Giphy Developers](https://developers.giphy.com/)).
+
+3. Build and serve:
 ```bash
-npm install
+GIPHY_API_KEY=... npm run dev
 ```
 
-3. Configure environment:
-- Copy `.env.example` to `.env`
-- Update `GIPHY_API_KEY` in `.env` with your API key
-  - For development, you can use the public beta key: `dc6zaTOxFJmzC`
-  - For production, get your key from [Giphy Developers](https://developers.giphy.com/)
-
-4. Start development server:
-```bash
-npm run dev
-```
+No dependencies to install. `npm test` runs the ASCII mapping self-check; `npm run build` writes `dist/`.
 
 The app will be available at `http://localhost:3000`
 
@@ -43,7 +36,6 @@ The app will be available at `http://localhost:3000`
 - p5.js - For canvas rendering
 - GSAP - For smooth animations
 - gif.js - For GIF processing
-- Webpack - For bundling and development
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/1ea1dceb-7057-45a9-872e-6d290fcd8d87" width="800" alt="Dashboard Overview">

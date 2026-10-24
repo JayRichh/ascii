@@ -10,6 +10,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
+    <link rel="canonical" href="https://asciigif.com/">
     
     <meta name="title" content="ASCII Art Generator - Convert GIFs to ASCII Animation | Free Online Tool">
     <meta name="description" content="Free ASCII art generator - No sign up required! Convert GIFs to ASCII animations instantly. Features real-time preview, zoom controls, and multiple export formats. Create, customize, and download your ASCII art now.">
@@ -39,7 +40,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="src/styles/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
     <script>
@@ -47,7 +48,6 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js"></script>
 
     <script type="application/ld+json">
     {
@@ -172,5 +172,6 @@
     </div>
     <button id="browse-toggle" aria-label="Browse GIFs" aria-pressed="false">Browse GIFs</button>
     <a href="https://jayrich.dev" target="_blank" rel="noopener" id="credits">jayrich.dev</a>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
